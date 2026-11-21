@@ -6,7 +6,7 @@ add_executable(CE4703GroupAssignment main.c
     doubleLinkedList.c
     orderedIntSet.c
     doubleLinkedList.h
-    orederedIntSet.h)
+    orderedIntSet.h)
 
 include(GNUInstallDirs)
 install(TARGETS CE4703GroupAssignment
