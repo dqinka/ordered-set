@@ -1,6 +1,8 @@
 #ifndef ORDEREDINTSET_H
 #define ORDEREDINTSET_H
 
+#include "doubleLinkedList.h"
+
 /**
  * @brief Return values of the ordered set operations.
  */
