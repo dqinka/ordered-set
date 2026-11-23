@@ -15,7 +15,7 @@
    @endverbatim
  *
  * @author Brian Redmond (data types, create/delete, getData, navigation)
- * @author Person 2 (insertAfter, insertBefore, deleteCurrent)
+ * @author Jamila Mohamed (insertAfter, insertBefore, deleteCurrent)
  */
 
 #ifndef DOUBLELINKEDLIST_H
@@ -171,7 +171,7 @@ bool isAtHead(const DoubleLinkedList *list);
 bool isAtTail(const DoubleLinkedList *list);
 
 /* ------------------------------------------------------------------------ */
-/* Insert / delete (Person 2)                                               */
+/* Insert / delete operations                                              */
 /* ------------------------------------------------------------------------ */
 
 /**

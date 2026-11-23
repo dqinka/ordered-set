@@ -18,7 +18,15 @@ configure_file(${CMAKE_SOURCE_DIR}/textInput.txt
                ${CMAKE_BINARY_DIR}/textInput.txt COPYONLY)
 
 include(GNUInstallDirs)
+
 install(TARGETS CE4703GroupAssignment
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+# Double linked list unit testing
+add_executable(testDoubleLinkedList
+    testDoubleLinkedList.c
+    doubleLinkedList.c
+)
+

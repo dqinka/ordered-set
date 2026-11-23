@@ -6,7 +6,7 @@
  * each operation.
  *
  * @author Brian Redmond (data types, create/delete, getData, navigation)
- * @author Person 2 (insertAfter, insertBefore, deleteCurrent)
+ * @author Jamila Mohamed (insertAfter, insertBefore, deleteCurrent)
  */
 
 #include <stdlib.h>
@@ -124,9 +124,89 @@ bool isAtTail(const DoubleLinkedList *list)
     return list != NULL && list->current == list->tail;
 }
 
-/* ------------------------------------------------------------------------ */
-/* Insert / delete (Person 2)                                               */
-/* ------------------------------------------------------------------------ */
+ListResult insertAfter(DoubleLinkedList *list, int newData)
+{
+    // Do not insert after the tail sentinel.
+    if (list == NULL || list->current == list->tail)
+    {
+        return LIST_INVALID_POSITION;
+    }
 
-/* TODO Person 2: implement insertAfter(), insertBefore() and deleteCurrent()
- * here, following the contracts documented in doubleLinkedList.h. */
+    // Allocate memory for a new node.
+    ListNode *newNode = malloc(sizeof *newNode);
+
+    if (newNode == NULL)
+    {
+        return LIST_ALLOCATION_ERROR;
+    }
+
+    // Store the new integer.
+    newNode->data = newData;
+
+    // Connect the new node between current and the next node.
+    newNode->prev = list->current;
+    newNode->next = list->current->next;
+
+    list->current->next->prev = newNode;
+    list->current->next = newNode;
+
+    return LIST_OK;
+}
+
+ListResult insertBefore(DoubleLinkedList *list, int newData)
+{
+    // Cannot insert before the head sentinel.
+    if (list == NULL || list->current == list->head)
+    {
+        return LIST_INVALID_POSITION;
+    }
+
+    // Allocate memory for the new node.
+    ListNode *newNode = malloc(sizeof *newNode);
+
+    if (newNode == NULL)
+    {
+        return LIST_ALLOCATION_ERROR;
+    }
+
+    // Store the new value.
+    newNode->data = newData;
+
+    // Connect the new node before the current node.
+    newNode->next = list->current;
+    newNode->prev = list->current->prev;
+
+    list->current->prev->next = newNode;
+    list->current->prev = newNode;
+
+    return LIST_OK;
+
+}
+
+
+ListResult deleteCurrent(DoubleLinkedList *list)
+{
+    // Cannot delete the head or tail sentinel.
+    if (list == NULL ||
+        list->current == list->head ||
+        list->current == list->tail)
+    {
+        return LIST_INVALID_POSITION;
+    }
+
+    // Remember the node that needs to be deleted.
+    ListNode *nodeToDelete = list->current;
+
+    // Connect the previous node to the next node.
+    nodeToDelete->prev->next = nodeToDelete->next;
+    nodeToDelete->next->prev = nodeToDelete->prev;
+
+    // Move current to the next node before deleting.
+    list->current = nodeToDelete->next;
+
+    // Free the memory.
+    free(nodeToDelete);
+
+    return LIST_OK;
+}
+
