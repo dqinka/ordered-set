@@ -1,3 +1,18 @@
+/**
+ * @file orderedIntSet.h
+ * @brief Ordered set of integers, built on a double linked list.
+ *
+ * An OrderedIntSet stores its integers in ascending order and never holds
+ * the same number twice. The numbers are kept in a DoubleLinkedList, and
+ * the set also keeps a counter of how many elements it contains. The
+ * counter increases when an element is added and decreases when one is
+ * removed.
+ *
+ * The operations report their outcome with the SetResult enumeration.
+ *
+ * @author Diana (set type, createOrderedSet, deleteOrderedSet, addElement, removeElement)
+ */
+
 #ifndef ORDEREDINTSET_H
 #define ORDEREDINTSET_H
 

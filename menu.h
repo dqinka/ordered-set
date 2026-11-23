@@ -9,6 +9,7 @@
  * function that needs it.
  *
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
+ * @author Diana Sholomko (option 5 and 6)
  */
 
 #ifndef MENU_H
@@ -122,10 +123,28 @@ void menuAddElements(OrderedIntSet *setsArray[], FILE *input);
 /** @brief Option 4: remove numbers until a negative one, then print the set (Person 4). */
 void menuRemoveElements(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 5: save the whole SetsArray to BINARY_FILE_NAME (Person 3). */
+/**
+ * @brief Option 5: saves the whole SetsArray to BINARY_FILE_NAME.
+ *
+ * The file holds, for each of the NUM_SETS slots, a flag (1 = set present,
+ * 0 = empty slot). For a present set, the flag is followed by its element
+ * count and then its elements in ascending order. Pointers are never
+ * written. Prints an error message if the file cannot be opened or written.
+ *
+ * @param setsArray Array of NUM_SETS set pointers (NULL = empty slot).
+ */
 void menuSaveSets(OrderedIntSet *setsArray[]);
 
-/** @brief Option 6: load the whole SetsArray from BINARY_FILE_NAME (Person 3). */
+/**
+ * @brief Option 6: loads the whole SetsArray from BINARY_FILE_NAME.
+ *
+ * The file is read into a temporary array first. Only if the whole file is
+ * valid are the existing sets deleted and replaced, so a missing or
+ * corrupt file leaves SetsArray unchanged. Sets are rebuilt with
+ * addElement(). Prints an error message on failure.
+ *
+ * @param setsArray Array of NUM_SETS set pointers (replaced on success).
+ */
 void menuLoadSets(OrderedIntSet *setsArray[]);
 
 /** @brief Option 7: intersection of i1 and i2 stored at i3, then printed (Person 5). */

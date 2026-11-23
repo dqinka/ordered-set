@@ -9,6 +9,7 @@
  * index is invalid, or the next numbers will be read as menu choices.
  *
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
+ * @author Diana Sholomko (option 5 and 6)
  */
 
 #include <stdio.h>
@@ -194,16 +195,123 @@ void menuRemoveElements(OrderedIntSet *setsArray[], FILE *input)
     /* TODO Person 4 */
 }
 
-void menuSaveSets(OrderedIntSet *setsArray[])
+/**
+ * @brief Writes one int to a binary file.
+ * @param file  Binary file open for writing.
+ * @param value Value to write.
+ * @return true if the value was written, false otherwise.
+ */
+static bool writeBinaryInt(FILE *file, int value)
 {
-    (void)setsArray;
-    /* TODO Person 3: write to BINARY_FILE_NAME */
+    return fwrite(&value, sizeof value, 1, file) == 1;
 }
 
+/**
+ * @brief Reads one int from a binary file.
+ * @param file  Binary file open for reading.
+ * @param value Receives the int that was read.
+ * @return true if a value was read, false at end of file or on error.
+ */
+static bool readBinaryInt(FILE *file, int *value)
+{
+    return fread(value, sizeof *value, 1, file) == 1;
+}
+
+/* Option 5: file layout and error handling are described in menu.h */
+void menuSaveSets(OrderedIntSet *setsArray[])
+{
+    FILE *file = fopen(BINARY_FILE_NAME, "wb");   /* no path */
+    bool ok = true;
+
+    if (file == NULL)
+    {
+        printf("Error: could not open %s for writing.\n", BINARY_FILE_NAME);
+        return;
+    }
+
+    for (int i = 0; i < NUM_SETS && ok; i++)
+    {
+        bool present = (setsArray[i] != NULL);
+        ok = writeBinaryInt(file, present ? 1 : 0);
+
+        if (ok && present)
+        {
+            DoubleLinkedList *list = setsArray[i]->list;
+            ok = writeBinaryInt(file, setsArray[i]->count);
+
+            /* walk through the real elements, from first to last */
+            gotoHead(list);
+            gotoNextNode(list);
+            while (ok && !isAtTail(list))
+            {
+                ok = writeBinaryInt(file, getData(list));
+                gotoNextNode(list);
+            }
+        }
+    }
+
+    if (fclose(file) != 0)
+    {
+        ok = false;
+    }
+
+    if (!ok)
+    {
+        printf("Error: writing to %s failed.\n", BINARY_FILE_NAME);
+    }
+}
+
+/* Option 6: file layout and error handling are described in menu.h */
 void menuLoadSets(OrderedIntSet *setsArray[])
 {
-    (void)setsArray;
-    /* TODO Person 3: read from BINARY_FILE_NAME (delete existing sets first) */
+    OrderedIntSet *loaded[NUM_SETS] = { NULL };   /* temporary array */
+    bool ok = true;
+
+    FILE *file = fopen(BINARY_FILE_NAME, "rb");   /* no path */
+    if (file == NULL)
+    {
+        printf("Error: could not open %s for reading.\n", BINARY_FILE_NAME);
+        return;
+    }
+
+    for (int i = 0; i < NUM_SETS && ok; i++)
+    {
+        int present = 0;
+        ok = readBinaryInt(file, &present) && (present == 0 || present == 1);
+
+        if (ok && present == 1)
+        {
+            int count = 0;
+
+            loaded[i] = createOrderedSet();
+            ok = (loaded[i] != NULL) &&
+                 readBinaryInt(file, &count) && count >= 0;
+
+            for (int j = 0; ok && j < count; j++)
+            {
+                int value = 0;
+                ok = readBinaryInt(file, &value) &&
+                     addElement(loaded[i], value) != ALLOCATION_ERROR;
+            }
+        }
+    }
+
+    fclose(file);
+
+    if (!ok)
+    {
+        /* bad or incomplete file: discard what was read, keep the old sets */
+        deleteAllSets(loaded);
+        printf("Error: could not read %s correctly.\n", BINARY_FILE_NAME);
+        return;
+    }
+
+    /* success: replace the existing sets with the loaded ones */
+    deleteAllSets(setsArray);
+    for (int i = 0; i < NUM_SETS; i++)
+    {
+        setsArray[i] = loaded[i];
+    }
 }
 
 void menuIntersection(OrderedIntSet *setsArray[], FILE *input)

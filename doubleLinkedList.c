@@ -7,6 +7,7 @@
  *
  * @author Brian Redmond (data types, create/delete, getData, navigation)
  * @author Jamila Mohamed (insertAfter, insertBefore, deleteCurrent)
+ * @date November 2026
  */
 
 #include <stdlib.h>
