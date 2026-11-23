@@ -7,9 +7,10 @@
  * step with textInput.txt while the real code is being written. Replace the
  * body of your handler, but keep reading all of its values even when an
  * index is invalid, or the next numbers will be read as menu choices.
- *
+
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
- * @author Diana Sholomko (option 5 and 6)
+ * @author Diana Sholomko (options 5 and 6)
+ * @author Jamila Mohamed (options 1 and 2: create and delete ordered sets)
  */
 
 #include <stdio.h>
@@ -161,20 +162,77 @@ static void skipUntilNegative(FILE *input)
     }
 }
 
+
+/**
+ * @brief Creates an empty ordered set at the selected index.
+ * @param setsArray Array of ordered set pointers.
+ * @param input Input file containing the index.
+ */
 void menuCreateSet(OrderedIntSet *setsArray[], FILE *input)
 {
     int index;
-    (void)setsArray;
-    (void)readIndex(input, &index);
-    /* TODO Person 2 */
+
+    // Read and validate the index (0 to 9).
+
+    printf("Please enter index (0 - 9) for set to be created:\n");
+    if (!readIndex(input, &index))
+    {
+        return;
+    }
+
+    // Check if a set already exists at this index.
+    if (setsArray[index] != NULL)
+    {
+        printf("Error: set already exists at index %d.\n", index);
+        return;
+    }
+
+    // Create a new empty ordered set.
+    setsArray[index] = createOrderedSet();
+
+    // Check if memory allocation failed.
+    if (setsArray[index] == NULL)
+    {
+        printf("Error: could not create set at index %d.\n", index);
+        return;
+    }
+
+    printf("Set at index %d created\n", index);
 }
 
+
+/**
+ * @brief Deletes an ordered set at the selected index.
+ * @param setsArray Array of ordered set pointers.
+ * @param input Input file containing the set index.
+ */
 void menuDeleteSet(OrderedIntSet *setsArray[], FILE *input)
 {
     int index;
-    (void)setsArray;
-    (void)readIndex(input, &index);
-    /* TODO Person 2 */
+
+    // Read and validate the index (0 to 9).
+
+    printf("Please enter index (0 - 9) for set to be deleted:\n");
+
+    if (!readIndex(input, &index))
+    {
+        return;
+    }
+
+    // Check if the set exists.
+    if (setsArray[index] == NULL)
+    {
+        printf("Error: no set exists at index %d.\n", index);
+        return;
+    }
+
+    // Delete the selected ordered set.
+    deleteOrderedSet(setsArray[index]);
+
+    // Clear the pointer to avoid using deleted memory.
+    setsArray[index] = NULL;
+
+    printf("Set at index %d deleted\n", index);
 }
 
 void menuAddElements(OrderedIntSet *setsArray[], FILE *input)

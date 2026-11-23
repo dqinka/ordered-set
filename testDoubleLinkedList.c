@@ -3,12 +3,19 @@
  * @file testDoubleLinkedList.c
  * @brief Temporary tests for double linked list operations.
  * @details Tests insertion, deletion, navigation and error handling.
+ * @author Jamila Mohamed
  */
 
 #include <stdio.h>
 #include <assert.h>
 #include "doubleLinkedList.h"
 
+/**
+ * @brief Runs tests for the double linked list operations.
+ * @details Checks insertion, deletion, navigation and invalid
+ * positions using assertions.
+ * @return 0 if all tests pass.
+ */
 int main(void)
 {
     // Create a new empty double linked list.
