@@ -11,6 +11,7 @@
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
  * @author Diana Sholomko (options 5 and 6)
  * @author Jamila Mohamed (options 1 and 2: create and delete ordered sets)
+ * @author Person 4 (options 3 and 4: add and remove elements)
  */
 
 #include <stdio.h>
@@ -146,11 +147,14 @@ void deleteAllSets(OrderedIntSet *setsArray[])
 }
 
 /* ------------------------------------------------------------------------ */
-/* Menu option handlers: placeholders that only consume their input         */
+/* Menu option handlers                                                  */
 /* ------------------------------------------------------------------------ */
 
 /**
- * @brief Reads numbers until a negative one (placeholder helper for 3 and 4).
+ * @brief Consumes unused values up to and including the negative sentinel.
+ *
+ * Used when an index is invalid or when no set exists in the requested slot.
+ * This keeps the next menu option aligned with the input file.
  * @param input Open input file.
  */
 static void skipUntilNegative(FILE *input)
@@ -158,7 +162,7 @@ static void skipUntilNegative(FILE *input)
     int value;
     while (readInt(input, &value) && value >= 0)
     {
-        /* discard */
+        /* discard values for the missing/invalid set */
     }
 }
 
@@ -235,22 +239,91 @@ void menuDeleteSet(OrderedIntSet *setsArray[], FILE *input)
     printf("Set at index %d deleted\n", index);
 }
 
-void menuAddElements(OrderedIntSet *setsArray[], FILE *input)
+/**
+ * @brief Runs option 3 or 4 using the selected ordered set.
+ *
+ * Every non-negative value is passed to addElement or removeElement.
+ * A negative value ends this option. No matter what happens, the input
+ * values are consumed up to the sentinel before returning to the menu.
+ *
+ * @param setsArray The ten set slots.
+ * @param input Input file to read the index and integers from.
+ * @param adding true for option 3, false for option 4.
+ */
+static void menuChangeElements(OrderedIntSet *setsArray[], FILE *input, bool adding)
 {
     int index;
-    (void)setsArray;
-    (void)readIndex(input, &index);
-    skipUntilNegative(input);
-    /* TODO Person 4 */
+    int value;
+
+    if (adding)
+    {
+        printf("Please enter index (0 - 9) for set to add elements:\n");
+    }
+    else
+    {
+        printf("Please enter index (0 - 9) for set to remove elements:\n");
+    }
+
+    if (!readIndex(input, &index))
+    {
+        /* Even a bad index may be followed by values and the sentinel. */
+        skipUntilNegative(input);
+        return;
+    }
+
+    if (setsArray[index] == NULL)
+    {
+        printf("Error: no set exists at index %d.\n", index);
+        skipUntilNegative(input);
+        return;
+    }
+
+    while (readInt(input, &value) && value >= 0)
+    {
+        SetResult result = adding ? addElement(setsArray[index], value)
+                                  : removeElement(setsArray[index], value);
+
+        switch (result)
+        {
+        case NUMBER_ADDED:
+            printf("%d: NUMBER_ADDED\n", value);
+            break;
+        case NUMBER_ALREADY_IN_SET:
+            printf("%d: NUMBER_ALREADY_IN_SET\n", value);
+            break;
+        case NUMBER_REMOVED:
+            printf("%d: NUMBER_REMOVED\n", value);
+            break;
+        case NUMBER_NOT_IN_SET:
+            printf("%d: NUMBER_NOT_IN_SET\n", value);
+            break;
+        case ALLOCATION_ERROR:
+            printf("%d: ALLOCATION_ERROR\n", value);
+            break;
+        }
+    }
+
+    printToStdout(setsArray[index]);
 }
 
+/**
+ * @brief Menu option 3: inserts values until the negative sentinel.
+ * @param setsArray The set pointers to update.
+ * @param input Open text input file.
+ */
+void menuAddElements(OrderedIntSet *setsArray[], FILE *input)
+{
+    menuChangeElements(setsArray, input, true);
+}
+
+/**
+ * @brief Menu option 4: removes values until the negative sentinel.
+ * @param setsArray The set pointers to update.
+ * @param input Open text input file.
+ */
 void menuRemoveElements(OrderedIntSet *setsArray[], FILE *input)
 {
-    int index;
-    (void)setsArray;
-    (void)readIndex(input, &index);
-    skipUntilNegative(input);
-    /* TODO Person 4 */
+    menuChangeElements(setsArray, input, false);
 }
 
 /**
