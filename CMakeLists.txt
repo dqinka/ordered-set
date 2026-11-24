@@ -31,14 +31,26 @@ add_executable(testDoubleLinkedList
 )
 
 
-# Person 4 function and menu regression tests (existing project sources).
 enable_testing()
-add_executable(testPerson4
-    tests/testPerson4.c
+add_test(NAME DoubleLinkedList COMMAND testDoubleLinkedList)
+
+# Additional set/menu tests, when present in the project.
+if(EXISTS "${CMAKE_SOURCE_DIR}/tests/testPerson4.c")
+    add_executable(testPerson4
+        tests/testPerson4.c
+        orderedIntSet.c
+        doubleLinkedList.c
+        menu.c
+    )
+    target_include_directories(testPerson4 PRIVATE ${CMAKE_SOURCE_DIR})
+    add_test(NAME Person4 COMMAND testPerson4)
+endif()
+
+# Separate test program for the three set operations.
+add_executable(testOrderedIntSet
+    testOrderedIntSet.c
     orderedIntSet.c
     doubleLinkedList.c
-    menu.c
 )
-target_include_directories(testPerson4 PRIVATE ${CMAKE_SOURCE_DIR})
-add_test(NAME Person4 COMMAND testPerson4)
-add_test(NAME DoubleLinkedList COMMAND testDoubleLinkedList)
+
+add_test(NAME OrderedIntSet COMMAND testOrderedIntSet)

@@ -1,13 +1,14 @@
 /**
  * @file orderedIntSet.c
- * @brief
+ * @brief Operations on ordered integer sets stored in a double linked list.
  *
  * Implementation of the ordered integer set, built on a double linked list.
  * See orderedIntSet.h for the data types and the full description of
  * each operation.
  *
  * @author Diana Sholomko (createOrderedSet, deleteOrderedSet, addElement and removeElement)
- * @author Person 4 (setIntersection and setUnion)
+ * @author Jack Dillon (setIntersection and setUnion)
+ * @author Shayan Khan (setDifference and printToStdout)
  * @date November 2026
  */
 
@@ -98,7 +99,7 @@ SetResult removeElement(OrderedIntSet *s, int elem)
 }
 
 /* ------------------------------------------------------------------------- */
-/* Person 4: ordered set intersection and union                               */
+/* Ordered set intersection and union                                         */
 /* ------------------------------------------------------------------------- */
 
 /**
@@ -212,28 +213,50 @@ OrderedIntSet *setUnion(const OrderedIntSet *s1, const OrderedIntSet *s2)
     return result;
 }
 
-/* Temporary shared helper for the team's incomplete Person 5 print function.
- * Remove/replace this one when the final group printToStdout is merged. */
+OrderedIntSet *setDifference(const OrderedIntSet *s1, const OrderedIntSet *s2)
+{
+    if (s1 == NULL || s2 == NULL) {
+        return NULL;
+    }
+    OrderedIntSet *result = createOrderedSet();
+    if (result == NULL) {
+        return NULL;
+    }
+
+    const ListNode *first = s1->list->head->next;
+    while (first != s1->list->tail) {
+        bool found = false;
+        const ListNode *second = s2->list->head->next;
+
+        /* Look for this value in the second set. */
+        while (second != s2->list->tail) {
+            if (first->data == second->data) {
+                found = true;
+                break;
+            }
+            second = second->next;
+        }
+        if (!found) {
+            if (!appendSorted(result, first->data)) {
+                deleteOrderedSet(result);
+                return NULL;
+            }
+        }
+        first = first->next;
+    }
+    return result;
+}
+
 void printToStdout(const OrderedIntSet *s)
 {
-    if (s == NULL)
-    {
-        printf("{}\n");
-        return;
-    }
-
     const ListNode *node = s->list->head->next;
     printf("{");
-
-    while (node != s->list->tail)
-    {
+    while (node != s->list->tail) {
         printf("%d", node->data);
-        if (node->next != s->list->tail)
-        {
-            printf(" , ");
-        }
         node = node->next;
+        if (node != s->list->tail) {
+            printf(", ");
+        }
     }
-
-    printf("}\n");
+    printf("}");
 }
