@@ -2,23 +2,21 @@
  * @file menu.c
  * @brief Menu loop, input helpers and menu option handlers.
  *
- * The handlers for options 1 to 9 are placeholders. Each one already reads
- * the right number of values from the input file, so the skeleton stays in
- * step with textInput.txt while the real code is being written. Replace the
- * body of your handler, but keep reading all of its values even when an
- * index is invalid, or the next numbers will be read as menu choices.
+ * Menu choices and their values are read from the same input file.
+ *
 
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
  * @author Diana Sholomko (options 5 and 6)
  * @author Jamila Mohamed (options 1 and 2: create and delete ordered sets)
- * @author Person 4 (options 3 and 4: add and remove elements)
+ * @author Jack Dillon (options 3 and 4: add and remove elements)
+ * @author Shayan Khan (options 7, 8 and 9)
  */
 
 #include <stdio.h>
 #include "menu.h"
 
 /* ------------------------------------------------------------------------ */
-/* Program skeleton (Brian)                                                 */
+/* Menu loop and input helpers                                               */
 /* ------------------------------------------------------------------------ */
 
 void runMenu(OrderedIntSet *setsArray[], FILE *input)
@@ -304,6 +302,7 @@ static void menuChangeElements(OrderedIntSet *setsArray[], FILE *input, bool add
     }
 
     printToStdout(setsArray[index]);
+    printf("\n");
 }
 
 /**
@@ -445,36 +444,87 @@ void menuLoadSets(OrderedIntSet *setsArray[])
     }
 }
 
-void menuIntersection(OrderedIntSet *setsArray[], FILE *input)
+/**
+ * @brief Reads indices and stores the result for menu option 7, 8 or 9.
+ * @param setsArray Array of NUM_SETS set pointers.
+ * @param input Shared input file.
+ * @param operation MENU_INTERSECTION, MENU_UNION or MENU_DIFFERENCE.
+ */
+static void menuSetOperation(OrderedIntSet *setsArray[], FILE *input, MenuOption operation)
 {
+    const char *name;
+    const char *label;
+    if (operation == MENU_INTERSECTION) {
+        name = "intersection";
+        label = "Intersection";
+    } else if (operation == MENU_UNION) {
+        name = "union";
+        label = "Union";
+    } else {
+        name = "difference";
+        label = "Difference";
+    }
+
+    printf("Your choice: %d\n", operation);
+    printf("Please enter three indices: two for sets to form %s of and one for the target set:\n",
+           name);
+
     int i1, i2, i3;
-    (void)setsArray;
-    /* read all three before validating, so input stays in step */
+    /* Read all three before acting, including when an earlier one is invalid. */
     bool ok1 = readIndex(input, &i1);
     bool ok2 = readIndex(input, &i2);
     bool ok3 = readIndex(input, &i3);
-    (void)ok1; (void)ok2; (void)ok3;
-    /* TODO Person 5 */
+    if (!ok1 || !ok2 || !ok3) {
+        return;
+    }
+
+    if (setsArray[i1] == NULL || setsArray[i2] == NULL) {
+        if (setsArray[i1] == NULL) {
+            printf("No ordered set available at index %d. ", i1);
+        }
+        if (setsArray[i2] == NULL) {
+            printf("No ordered set available at index %d. ", i2);
+        }
+        printf("Cannot perform set %s.\n", name);
+        return;
+    }
+
+    /* The destination may also be an input, so calculate the result first. */
+    OrderedIntSet *result;
+    if (operation == MENU_INTERSECTION) {
+        result = setIntersection(setsArray[i1], setsArray[i2]);
+    } else if (operation == MENU_UNION) {
+        result = setUnion(setsArray[i1], setsArray[i2]);
+    } else {
+        result = setDifference(setsArray[i1], setsArray[i2]);
+    }
+
+    if (result == NULL) {
+        printf("Cannot perform set %s: memory allocation failed.\n", name);
+        return;
+    }
+
+    if (setsArray[i3] != NULL) {
+        deleteOrderedSet(setsArray[i3]);
+    }
+    setsArray[i3] = result;
+    printf("Set %s = ", label);
+    printToStdout(result);
+    printf("\n");
+    /* runMenu prints the extra blank line after the choice. */
+}
+
+void menuIntersection(OrderedIntSet *setsArray[], FILE *input)
+{
+    menuSetOperation(setsArray, input, MENU_INTERSECTION);
 }
 
 void menuUnion(OrderedIntSet *setsArray[], FILE *input)
 {
-    int i1, i2, i3;
-    (void)setsArray;
-    bool ok1 = readIndex(input, &i1);
-    bool ok2 = readIndex(input, &i2);
-    bool ok3 = readIndex(input, &i3);
-    (void)ok1; (void)ok2; (void)ok3;
-    /* TODO Person 5 */
+    menuSetOperation(setsArray, input, MENU_UNION);
 }
 
 void menuDifference(OrderedIntSet *setsArray[], FILE *input)
 {
-    int i1, i2, i3;
-    (void)setsArray;
-    bool ok1 = readIndex(input, &i1);
-    bool ok2 = readIndex(input, &i2);
-    bool ok3 = readIndex(input, &i3);
-    (void)ok1; (void)ok2; (void)ok3;
-    /* TODO Person 5: i1 - i2, not i2 - i1 */
+    menuSetOperation(setsArray, input, MENU_DIFFERENCE);
 }

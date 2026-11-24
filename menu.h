@@ -10,6 +10,9 @@
  *
  * @author Brian Redmond (skeleton, menu loop, input helpers, option 10)
  * @author Diana Sholomko (option 5 and 6)
+ * @author Jamila Mohamed (options 1 and 2)
+ * @author Jack Dillon (options 3 and 4)
+ * @author Shayan Khan (options 7, 8 and 9)
  */
 
 #ifndef MENU_H
@@ -28,27 +31,23 @@
 /** Binary file for options 5 and 6, opened without a path. */
 #define BINARY_FILE_NAME "SetsArrayFile.bin"
 
-/**
- * Set to 1 to print the menu text before each choice is read. Person 2
- * should set this to match the lecturer's expected output.
- */
+/** Controls whether the menu text is printed before each input choice. */
 #define PRINT_MENU 0
 
 /**
  * @brief Menu option numbers, as listed in section 4 of the brief.
  */
-typedef enum
-{
-    MENU_CREATE_SET     = 1,  /**< Create an empty ordered set.  */
-    MENU_DELETE_SET     = 2,  /**< Delete an ordered set.        */
-    MENU_ADD_ELEMENTS   = 3,  /**< Add elements to a set.        */
+typedef enum {
+    MENU_CREATE_SET = 1,      /**< Create an empty ordered set.  */
+    MENU_DELETE_SET = 2,      /**< Delete an ordered set.        */
+    MENU_ADD_ELEMENTS = 3,    /**< Add elements to a set.        */
     MENU_REMOVE_ELEMENTS = 4, /**< Remove elements from a set.   */
-    MENU_SAVE           = 5,  /**< Save SetsArray to binary file. */
-    MENU_LOAD           = 6,  /**< Load SetsArray from binary file. */
-    MENU_INTERSECTION   = 7,  /**< Set intersection.             */
-    MENU_UNION          = 8,  /**< Set union.                    */
-    MENU_DIFFERENCE     = 9,  /**< Set difference.               */
-    MENU_TERMINATE      = 10  /**< Terminate the program.        */
+    MENU_SAVE = 5,            /**< Save SetsArray to binary file. */
+    MENU_LOAD = 6,            /**< Load SetsArray from binary file. */
+    MENU_INTERSECTION = 7,    /**< Set intersection.             */
+    MENU_UNION = 8,           /**< Set union.                    */
+    MENU_DIFFERENCE = 9,      /**< Set difference.               */
+    MENU_TERMINATE = 10       /**< Terminate the program.        */
 } MenuOption;
 
 /* ------------------------------------------------------------------------ */
@@ -111,16 +110,16 @@ void deleteAllSets(OrderedIntSet *setsArray[]);
 /* Menu option handlers (one per option)                                    */
 /* ------------------------------------------------------------------------ */
 
-/** @brief Option 1: create an empty set at the index read from @p input (Person 2). */
+/** @brief Option 1: create an empty set at the index read from @p input. */
 void menuCreateSet(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 2: delete the set at the index read from @p input (Person 2). */
+/** @brief Option 2: delete the set at the index read from @p input. */
 void menuDeleteSet(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 3: add numbers until a negative one, then print the set (Person 4). */
+/** @brief Option 3: add numbers until a negative one, then print the set. */
 void menuAddElements(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 4: remove numbers until a negative one, then print the set (Person 4). */
+/** @brief Option 4: remove numbers until a negative one, then print the set. */
 void menuRemoveElements(OrderedIntSet *setsArray[], FILE *input);
 
 /**
@@ -147,13 +146,13 @@ void menuSaveSets(OrderedIntSet *setsArray[]);
  */
 void menuLoadSets(OrderedIntSet *setsArray[]);
 
-/** @brief Option 7: intersection of i1 and i2 stored at i3, then printed (Person 5). */
+/** @brief Option 7: intersection of i1 and i2 stored at i3, then printed. */
 void menuIntersection(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 8: union of i1 and i2 stored at i3, then printed (Person 5). */
+/** @brief Option 8: union of i1 and i2 stored at i3, then printed. */
 void menuUnion(OrderedIntSet *setsArray[], FILE *input);
 
-/** @brief Option 9: difference i1 - i2 stored at i3, then printed (Person 5). */
+/** @brief Option 9: difference i1 - i2 stored at i3, then printed. */
 void menuDifference(OrderedIntSet *setsArray[], FILE *input);
 
 #endif /* MENU_H */

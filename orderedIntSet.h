@@ -11,6 +11,8 @@
  * The operations report their outcome with the SetResult enumeration.
  *
  * @author Diana (set type, createOrderedSet, deleteOrderedSet, addElement, removeElement)
+ * @author Jack Dillon (setIntersection and setUnion)
+ * @author Shayan Khan (setDifference and printToStdout)
  */
 
 #ifndef ORDEREDINTSET_H
@@ -22,11 +24,11 @@
  * @brief Return values of the ordered set operations.
  */
 typedef enum {
-    NUMBER_ADDED,           /**< Element was inserted into the set. */
-    NUMBER_ALREADY_IN_SET,  /**< Element already exists in the set. */
-    NUMBER_REMOVED,         /**< Element was removed from the set. */
-    NUMBER_NOT_IN_SET,      /**< Element does not exist in the set. */
-    ALLOCATION_ERROR        /**< Memory allocation failed; the set was not changed. */
+    NUMBER_ADDED,          /**< Element was inserted into the set. */
+    NUMBER_ALREADY_IN_SET, /**< Element already exists in the set. */
+    NUMBER_REMOVED,        /**< Element was removed from the set. */
+    NUMBER_NOT_IN_SET,     /**< Element does not exist in the set. */
+    ALLOCATION_ERROR       /**< Memory allocation failed; the set was not changed. */
 } SetResult;
 
 /**
@@ -97,12 +99,18 @@ OrderedIntSet *setIntersection(const OrderedIntSet *s1, const OrderedIntSet *s2)
 OrderedIntSet *setUnion(const OrderedIntSet *s1, const OrderedIntSet *s2);
 
 /**
- * @brief Prints the set to stdout in braces, or {} for an empty set.
- *
- * The print operation does not move the list's current pointer.
- * @param s Set to display.
- * @note This small integration helper is included until Person 5 adds
- *       their final printToStdout implementation. Keep only one definition.
+ * @brief Creates a new set containing values in s1 that are not in s2.
+ * @param s1 First valid set.
+ * @param s2 Set whose values are excluded.
+ * @return New set, or NULL if allocation fails.
+ * @post Both input sets, including their current nodes, are unchanged.
+ */
+OrderedIntSet *setDifference(const OrderedIntSet *s1, const OrderedIntSet *s2);
+
+/**
+ * @brief Prints a set as {1, 2, 3}, or {} if empty, without a newline.
+ * @param s Valid set to print.
+ * @post The set and its current node are unchanged.
  */
 void printToStdout(const OrderedIntSet *s);
 
