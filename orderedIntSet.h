@@ -68,4 +68,42 @@ SetResult addElement(OrderedIntSet *s, int elem);
  */
 SetResult removeElement(OrderedIntSet *s, int elem);
 
+/**
+ * @brief Creates the intersection of two ordered sets.
+ *
+ * Only values present in both sets are copied to the new set. Neither input
+ * set, including its current list position, is changed.
+ *
+ * @pre Both arguments point to valid ordered sets.
+ * @param s1 First input set.
+ * @param s2 Second input set.
+ * @return A newly allocated set, which the caller must delete, or NULL if
+ *         memory allocation fails.
+ */
+OrderedIntSet *setIntersection(const OrderedIntSet *s1, const OrderedIntSet *s2);
+
+/**
+ * @brief Creates the union of two ordered sets.
+ *
+ * Values from both sets are copied in ascending order, without duplicates.
+ * Neither input set, including its current list position, is changed.
+ *
+ * @pre Both arguments point to valid ordered sets.
+ * @param s1 First input set.
+ * @param s2 Second input set.
+ * @return A newly allocated set, which the caller must delete, or NULL if
+ *         memory allocation fails.
+ */
+OrderedIntSet *setUnion(const OrderedIntSet *s1, const OrderedIntSet *s2);
+
+/**
+ * @brief Prints the set to stdout in braces, or {} for an empty set.
+ *
+ * The print operation does not move the list's current pointer.
+ * @param s Set to display.
+ * @note This small integration helper is included until Person 5 adds
+ *       their final printToStdout implementation. Keep only one definition.
+ */
+void printToStdout(const OrderedIntSet *s);
+
 #endif // ORDEREDINTSET_H
